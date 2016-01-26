@@ -37,13 +37,6 @@ module Spree
         state == 'confirm'
     end
 
-    # ok genius, YOU figure out why I get a 'no pending payments' during the execution of
-    # checkout_payments_spec:"Voucher Redemption":"paying solely by voucher":it "allows completion without entering other payment"
-    # and I'll remove this line...which is only here to make the test pass...which makes me sick
-    durably_decorate :pending_payments, mode: 'soft', sha: '221b0bab98b0dcde509ba39048c34da57d88cfba' do
-      payments.reload.select { |payment| payment.checkout? || payment.pending? }
-    end
-
     def vouchers
       line_items.map(&:vouchers).flatten
     end
