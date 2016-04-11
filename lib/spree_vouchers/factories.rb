@@ -1,7 +1,6 @@
 FactoryGirl.define do
   factory :voucher_payment_method, class: Spree::PaymentMethod::Voucher do
     name 'Voucher'
-    environment 'test'
   end
 
   factory :voucher, :class => 'Spree::Voucher' do
