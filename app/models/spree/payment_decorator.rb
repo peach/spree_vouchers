@@ -15,10 +15,8 @@ module Spree
       end
     end
 
-    durably_decorate :invalidate_old_payments, mode: 'soft', sha: '3f60ad1d459f5b8e19c0ca2169e3108561a6c6e0' do
-      order.payments.with_state('checkout').where("id != ?", self.id).each do |payment|
-        payment.invalidate! unless payment.voucher?
-      end
+    durably_decorate :invalidate_old_payments, mode: 'soft', sha: '6775533b1a50f5b2c5c61fe3012e838bee90bd54' do
+      original_invalidate_old_payments unless voucher?
     end
   end
 end
