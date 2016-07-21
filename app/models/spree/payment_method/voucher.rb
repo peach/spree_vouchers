@@ -63,7 +63,7 @@ module Spree
 
     def credit(amount_in_cents, auth_code, gateway_options)
       action = ->(voucher) {
-        voucher.credit(amount_in_cents / 100, auth_code, gateway_options[:currency])
+        voucher.credit(amount_in_cents / 100, auth_code, gateway_options[:currency] || voucher.currency)
       }
 
       handle_action(action,:credit, auth_code)
