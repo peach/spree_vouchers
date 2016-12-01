@@ -16,7 +16,7 @@ module SpreeVouchers
     end
 
     initializer "spree_vouchers.register.payment_methods" do |app|
-      app.config.spree.payment_methods += [Spree::PaymentMethod::Voucher]
+      app.config.spree.payment_methods << Spree::PaymentMethod::Voucher
     end
 
     config.to_prepare &method(:activate).to_proc
