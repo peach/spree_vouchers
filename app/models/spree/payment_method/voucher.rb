@@ -57,7 +57,6 @@ module Spree
     end
 
     def void(auth_code, *ignored_options)
-
       action = ->(voucher) {
         voucher.void(auth_code)
       }
@@ -65,6 +64,11 @@ module Spree
       handle_action(action,:void, auth_code)
     end
 
+    def cancel(auth_code)
+      # cancel can be used for authorized or captured payments
+      # void will work for both, so just use void
+      void(auth_code)
+    end
 
     def credit(amount_in_cents, auth_code, gateway_options)
       action = ->(voucher) {

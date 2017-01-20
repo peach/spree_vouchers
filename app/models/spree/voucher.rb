@@ -86,17 +86,7 @@ module Spree
       capture_event = self.voucher_events.where(action: 'capture').where(authorization_code: authorization_code).first rescue nil
 
       if capture_event
-        self.remaining_amount  = self.remaining_amount + capture_event.amount
-
-        # de-auth the fully authorized amount
-        if auth_event
-          auth_amount = auth_event.amount
-        else
-          Rails.logger.error "Missing auth event but we have a capture event: capture_event.inspect"
-          auth_amount = capture_event.amount
-        end
-
-        self.authorized_amount = self.authorized_amount - auth_amount
+        self.remaining_amount = self.remaining_amount + capture_event.amount
         self.save!
         self.voucher_events.create!(action: 'void', :amount => capture_event.amount, authorization_code: authorization_code)
         return true
