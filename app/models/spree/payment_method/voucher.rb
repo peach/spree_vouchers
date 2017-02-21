@@ -28,6 +28,11 @@ module Spree
       payment.state != 'void'
     end
 
+    def purchase(amount_in_cents, source, gateway_options = {})
+      auth = authorize(amount_in_cents, source, gateway_options)
+      capture(amount_in_cents, auth.authorization, gateway_options)
+    end
+
     def authorize(amount_in_cents, source, gateway_options = {})
       # a voucher is authorized if: it exists, is not expired, and has a postive balance
       # Voucher.where("balance > 0").where("date <= ?", Time.now).exists?
@@ -37,7 +42,7 @@ module Spree
         ActiveMerchant::Billing::Response.new(false, "Could not find voucher: #{source.number}", {}, {})
       else
         action = ->(voucher) {
-          voucher.authorize(amount_in_cents / 100, gateway_options[:currency])
+          voucher.authorize(amount_in_cents / 100.0, gateway_options[:currency])
         }
         handle_action_call(voucher, action, :authorize)
       end
@@ -45,14 +50,13 @@ module Spree
 
     def capture(amount_in_cents, auth_code, gateway_options)
       action = ->(voucher) {
-        voucher.capture(amount_in_cents / 100, auth_code, gateway_options[:currency])
+        voucher.capture(amount_in_cents / 100.0, auth_code, gateway_options[:currency])
       }
 
       handle_action(action,:capture, auth_code)
     end
 
     def void(auth_code, *ignored_options)
-
       action = ->(voucher) {
         voucher.void(auth_code)
       }
@@ -60,6 +64,11 @@ module Spree
       handle_action(action,:void, auth_code)
     end
 
+    def cancel(auth_code)
+      # cancel can be used for authorized or captured payments
+      # void will work for both, so just use void
+      void(auth_code)
+    end
 
     def credit(amount_in_cents, auth_code, gateway_options)
       action = ->(voucher) {
