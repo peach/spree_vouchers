@@ -24,19 +24,6 @@ module Spree
     Spree::Order.state_machine.after_transition  :to => :complete, :do => :activate_vouchers
     Spree::Order.state_machine.after_transition  :to => :canceled, :do => :deactivate_vouchers
 
-    # let's always force a confirmation if any of our payment methods support it.
-    # vouchers don't meet the 'payment profiles' criteria and I don't want to add that hack
-    # into them just for the confirmation step
-    durably_decorate :confirmation_required?, mode: 'soft', sha: '63e6ea9a16bfd8f2ce715265a761d5d4ed9a48dc' do
-      Spree::Config[:always_include_confirm_step] ||
-        available_payment_methods.any?(&:payment_profiles_supported?) ||
-        
-        # Little hacky fix for #4117
-        # If this wasn't here, order would transition to address state on confirm failure
-        # because there would be no valid payments any more.
-        state == 'confirm'
-    end
-
     def vouchers
       line_items.map(&:vouchers).flatten
     end
