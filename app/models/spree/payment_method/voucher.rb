@@ -30,6 +30,7 @@ module Spree
 
     def purchase(amount_in_cents, source, gateway_options = {})
       auth = authorize(amount_in_cents, source, gateway_options)
+      return auth unless auth.success?
       capture(amount_in_cents, auth.authorization, gateway_options)
     end
 
