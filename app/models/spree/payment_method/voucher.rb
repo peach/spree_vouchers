@@ -43,7 +43,7 @@ module Spree
         ActiveMerchant::Billing::Response.new(false, "Could not find voucher: #{source.number}", {}, {})
       else
         action = ->(voucher) {
-          voucher.authorize(amount_in_cents / 100.0, gateway_options[:currency])
+          voucher.authorize(amount_in_cents / 100.0.to_d, gateway_options[:currency])
         }
         handle_action_call(voucher, action, :authorize)
       end
@@ -51,7 +51,7 @@ module Spree
 
     def capture(amount_in_cents, auth_code, gateway_options)
       action = ->(voucher) {
-        voucher.capture(amount_in_cents / 100.0, auth_code, gateway_options[:currency])
+        voucher.capture(amount_in_cents / 100.0.to_d, auth_code, gateway_options[:currency])
       }
 
       handle_action(action,:capture, auth_code)
@@ -73,7 +73,7 @@ module Spree
 
     def credit(amount_in_cents, auth_code, gateway_options)
       action = ->(voucher) {
-        voucher.credit(amount_in_cents / 100, auth_code, gateway_options[:currency] || voucher.currency)
+        voucher.credit(amount_in_cents / 100.to_d, auth_code, gateway_options[:currency] || voucher.currency)
       }
 
       handle_action(action,:credit, auth_code)
