@@ -1,7 +1,7 @@
 module Spree
   Payment.class_eval do
 
-#TODO: Upgrade soidus v2.1 this method not exist  
+#TODO: Upgrade soidus v2.4 this method not exist  
 #    delegate :voucher?, to: :payment_method
 #    durably_decorate :build_source, mode: 'soft', sha: '885462e553687d3221c410a8a85d19f553da36db' do
 #      return unless new_record?
